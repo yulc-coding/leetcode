@@ -12,3 +12,4 @@ logs
 *.iml
 *.ipr
 /.idea/
+/out/
