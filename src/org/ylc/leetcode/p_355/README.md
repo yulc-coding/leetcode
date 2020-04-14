@@ -9,10 +9,8 @@
 * follow(followerId, followeeId): 关注一个用户
 * unfollow(followerId, followeeId): 取消关注一个用户
 
-### 分析
 
-
-### 解题思路
+### 思路
 * 使用全局变量`index`来区分推文发布先后，每次发布+1；
 * 使用`HashMap`来维护用户关注列表，其中`key`为用户自身ID，`value`为所有关注的信息，存入HashSet中：
     > 关注即在对应的Set中新增指定的userId  
