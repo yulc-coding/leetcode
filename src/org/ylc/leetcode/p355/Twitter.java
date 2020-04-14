@@ -1,4 +1,4 @@
-package org.ylc.leetcode.p_355;
+package org.ylc.leetcode.p355;
 
 import java.util.*;
 
