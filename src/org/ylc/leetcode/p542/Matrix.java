@@ -4,6 +4,7 @@ package org.ylc.leetcode.p542;
  * 代码全万行，注释第一行
  * 注释不规范，同事泪两行
  * <p>
+ * 01 矩阵
  * 执行用时 : 8 ms, 在所有 Java 提交中击败了 94.93% 的用户
  * 内存消耗 : 42.8 MB, 在所有 Java 提交中击败了 100.00% 的用户
  *
@@ -11,7 +12,7 @@ package org.ylc.leetcode.p542;
  * @version 1.0.0
  * @date 2020-04-15
  */
-public class Solution {
+public class Matrix {
 
     public int[][] updateMatrix(int[][] matrix) {
         // 矩阵纵向的个数(行数)
@@ -89,7 +90,7 @@ public class Solution {
                 {1, 1, 1, 1, 1, 1, 1, 0, 1, 0},
                 {1, 1, 1, 1, 0, 1, 0, 0, 1, 1}
         };
-        Solution s = new Solution();
+        Matrix s = new Matrix();
         int[][] result = s.updateMatrix(matrix);
         for (int[] ints : result) {
             for (int anInt : ints) {
