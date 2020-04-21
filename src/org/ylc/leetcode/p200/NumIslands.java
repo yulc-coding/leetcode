@@ -18,11 +18,11 @@ import java.util.Set;
 public class NumIslands {
 
     public int run(char[][] grid) {
-        int h = grid.length;
-        if (h == 0) {
+        int rows = grid.length;
+        if (rows == 0) {
             return 0;
         }
-        int w = grid[0].length;
+        int cols = grid[0].length;
 
         int result = 0;
         // 存放岛屿关联的位置，如果当前位置为1，则存放右边和下边为1的坐标
@@ -30,58 +30,61 @@ public class NumIslands {
         // 重复岛屿信息，2个岛屿公用一个点，需要合并（防止出现重复关联：A->B,B->A，以小的值作为key）
         Map<Integer, Set<Integer>> repeatMap = new HashMap<>();
         Set<Integer> repeatSet;
+        // 被重复的岛屿信息，如A->B 重复，记录 B
+        Set<Integer> beRepeatSet = new HashSet<>();
+        // 多次重复的次数， 如 A-> B, B->C ,存在两条重复记录，实际ABC应该是一个岛屿
+        int multipleRepeat = 0;
         // 岛屿的起始点
-        int landIndex;
-        // 已存在的岛屿起始点
-        int existsLandIndex;
-        // 如果左边和上边都是0，说明这是一个新的岛屿
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                if (grid[i][j] == '0') {
+        int landRoot;
+        // 已关联的岛屿起始点
+        int existsLand;
+        // 假设如果左边和上边都是0，说明这是一个新的岛屿，（实际不是，后面需要去重）
+        for (int curRow = 0; curRow < rows; curRow++) {
+            for (int curCol = 0; curCol < cols; curCol++) {
+                if (grid[curRow][curCol] == '0') {
                     continue;
                 }
                 // 非新的岛屿，获取当前岛屿的起始点并清理当前坐标
-                if (landMap.containsKey(i * w + j)) {
-                    landIndex = landMap.get(i * w + j);
-                    landMap.remove(i * w + j);
+                if (landMap.containsKey(curRow * cols + curCol)) {
+                    landRoot = landMap.get(curRow * cols + curCol);
+                    landMap.remove(curRow * cols + curCol);
                 } else {
                     // 新岛屿
                     result++;
-                    landIndex = i * w + j;
-                }
-                if (i == 1 && j == 2) {
-                    System.out.println(1);
+                    landRoot = curRow * cols + curCol;
                 }
                 // 下边为1的
-                if (i < h - 1 && grid[i + 1][j] == '1') {
-                    landMap.put((i + 1) * w + j, landIndex);
+                if (curRow < rows - 1 && grid[curRow + 1][curCol] == '1') {
+                    landMap.put((curRow + 1) * cols + curCol, landRoot);
                 }
-                // 右边为1的
-                if (j < w - 1 && grid[i][j + 1] == '1') {
-                    if (!landMap.containsKey(i * w + j + 1)) {
-                        landMap.put(i * w + j + 1, landIndex);
+                // 右边为1的，右边的点可能已经和右边上边岛屿关联的
+                if (curCol < cols - 1 && grid[curRow][curCol + 1] == '1') {
+                    if (!landMap.containsKey(curRow * cols + curCol + 1)) {
+                        landMap.put(curRow * cols + curCol + 1, landRoot);
                         continue;
                     }
                     // 判断是否2个岛屿公用这个点，记录重复信息
-                    existsLandIndex = landMap.get(i * w + j + 1);
-                    if (landIndex != existsLandIndex) {
+                    existsLand = landMap.get(curRow * cols + curCol + 1);
+                    if (landRoot != existsLand) {
                         // 防止出现重复关联，用小的值作为key
-                        if (existsLandIndex < landIndex) {
-                            repeatSet = repeatMap.computeIfAbsent(existsLandIndex, k -> new HashSet<>());
-                            repeatSet.add(landIndex);
-                        } else {
-                            repeatSet = repeatMap.computeIfAbsent(landIndex, k -> new HashSet<>());
-                            repeatSet.add(existsLandIndex);
+                        repeatSet = repeatMap.computeIfAbsent(Math.min(existsLand, landRoot), k -> new HashSet<>());
+                        repeatSet.add(Math.max(existsLand, landRoot));
+                        // 添加被重复记录
+                        beRepeatSet.add(Math.max(existsLand, landRoot));
+                        // 是否存在链式重复关系
+                        if (beRepeatSet.contains(Math.min(existsLand, landRoot))) {
+                            multipleRepeat++;
                         }
                     }
                 }
             }
         }
+        System.out.println(multipleRepeat);
         // 去重
         for (Set<Integer> repeatLands : repeatMap.values()) {
             result -= repeatLands.size();
         }
-        return result;
+        return result + multipleRepeat;
     }
 
     public static void main(String[] args) {
