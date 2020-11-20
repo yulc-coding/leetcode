@@ -39,6 +39,7 @@ public class Solution {
         // 任务类别数量
         int taskNumbers = list.size();
 
+        // 默认需要的待命次数
         int defaultWaitNumbers = Math.max((n + 1 - taskNumbers), 0);
         
         return 0;
